@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Local Claude Code config
+.claude/
+
+# Playwright MCP debug artifacts
+.playwright-mcp/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp

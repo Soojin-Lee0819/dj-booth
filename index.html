@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giza DJ Booth</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="cockpit">
+
+    <!-- ======== LEFT COLUMN: Deck A ======== -->
+    <div class="col col-left">
+      <div class="deck" id="deck-a">
+        <h2>Deck A</h2>
+        <p class="track-name">Better Machine Future House</p>
+        <button class="play-btn" id="play-a">Play</button>
+        <div class="volume-control">
+          <label for="vol-a">Volume</label>
+          <input type="range" id="vol-a" min="0" max="1" step="0.01" value="1" orient="vertical">
+        </div>
+      </div>
+      <div class="gesture-dock">
+        <div class="gesture-card" id="gc-palm-left">
+          <div class="gesture-card-icon">&#9995;</div>
+          <span>Play</span>
+        </div>
+        <div class="gesture-card" id="gc-fist-left">
+          <img src="public/gesture_closed_fist.png" alt="Closed Fist">
+          <span>Pause</span>
+        </div>
+        <div class="gesture-card" id="gc-pinch-left">
+          <img src="public/gesture_pinch.png" alt="Pinch">
+          <span>Volume</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== CENTER COLUMN ======== -->
+    <div class="col col-center">
+      <h1>GIZA DJ BOOTH</h1>
+      <div id="status">Loading tracks...</div>
+
+      <!-- Camera feed -->
+      <div id="camera-container">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="overlay"></canvas>
+      </div>
+
+      <!-- Crossfader -->
+      <div id="crossfader-section">
+        <div class="crossfader-labels"><span>A</span><span>Crossfader</span><span>B</span></div>
+        <input type="range" id="crossfader" min="0" max="1" step="0.01" value="0.5">
+        <div class="gesture-card crossfade-card" id="gc-crossfade">
+          <img src="public/gesture_crossfade.png" alt="Flat Hand Swipe">
+          <span>Flat Hand Swipe</span>
+        </div>
+      </div>
+
+      <!-- SFX Pad -->
+      <div id="sfx-pad">
+        <button class="sfx-btn" data-sfx="laser">
+          <span class="sfx-icon">&#9889;</span>
+          <span class="sfx-label">Laser Zap</span>
+        </button>
+        <button class="sfx-btn" data-sfx="horn">
+          <span class="sfx-icon">&#128227;</span>
+          <span class="sfx-label">Air Horn</span>
+        </button>
+        <button class="sfx-btn" data-sfx="robot">
+          <span class="sfx-icon">&#9881;</span>
+          <span class="sfx-label">Robot Talk</span>
+        </button>
+        <button class="sfx-btn" data-sfx="boom">
+          <span class="sfx-icon">&#10026;</span>
+          <span class="sfx-label">Bass Boom</span>
+        </button>
+        <button class="sfx-btn" data-sfx="backspin">
+          <span class="sfx-icon">&#8634;</span>
+          <span class="sfx-label">Backspin</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======== RIGHT COLUMN: Deck B ======== -->
+    <div class="col col-right">
+      <div class="deck" id="deck-b">
+        <h2>Deck B</h2>
+        <p class="track-name">Ardor | Future House</p>
+        <button class="play-btn" id="play-b">Play</button>
+        <div class="volume-control">
+          <label for="vol-b">Volume</label>
+          <input type="range" id="vol-b" min="0" max="1" step="0.01" value="1" orient="vertical">
+        </div>
+      </div>
+      <div class="gesture-dock">
+        <div class="gesture-card" id="gc-palm-right">
+          <div class="gesture-card-icon">&#9995;</div>
+          <span>Play</span>
+        </div>
+        <div class="gesture-card" id="gc-fist-right">
+          <img src="public/gesture_closed_fist.png" alt="Closed Fist">
+          <span>Pause</span>
+        </div>
+        <div class="gesture-card" id="gc-clap">
+          <img src="public/gesture_clap.png" alt="Clap">
+          <span>Bass Boom</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VFX overlay -->
+  <div id="vfx-layer"></div>
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>

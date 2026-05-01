@@ -1,0 +1,504 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ======================================
+   Background: Giza concert image + overlay
+   ====================================== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #eee;
+  min-height: 100vh;
+  background: url('public/bg_giza_main.jpg') no-repeat center bottom / cover fixed;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0.92) 0%,
+    rgba(0,0,0,0.75) 35%,
+    rgba(0,0,0,0.45) 65%,
+    rgba(0,0,0,0.3) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Ambient glow when music plays */
+body.music-active::before {
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0.88) 0%,
+    rgba(0,0,0,0.65) 35%,
+    rgba(20,5,0,0.4) 65%,
+    rgba(40,10,0,0.25) 100%
+  );
+  animation: ambientPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ambientPulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+/* ======================================
+   Cockpit: 3-column grid
+   ====================================== */
+#cockpit {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  min-height: 100vh;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+/* ---- Columns ---- */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.col-left, .col-right {
+  padding-top: 1.5rem;
+}
+
+.col-center {
+  align-items: center;
+  padding-top: 0.8rem;
+}
+
+/* ======================================
+   Title
+   ====================================== */
+h1 {
+  font-size: 2rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ff6a00;
+  text-shadow: 0 0 10px #ff4500, 0 0 30px rgba(255,69,0,0.4);
+  margin-bottom: 0.2rem;
+}
+
+#status {
+  color: #775533;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+#status.ready { color: #ff8c00; text-shadow: 0 0 6px rgba(255,140,0,0.4); }
+#status.error { color: #f44336; }
+
+/* ======================================
+   Deck panels (glassmorphism)
+   ====================================== */
+.deck {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,69,0,0.2);
+  border-radius: 14px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  transition: all 0.3s;
+}
+
+.deck.active {
+  border-color: rgba(255,69,0,0.5);
+  box-shadow: 0 0 35px rgba(255,69,0,0.15);
+}
+
+.deck h2 {
+  font-size: 0.95rem;
+  color: #cc8844;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.track-name {
+  font-size: 0.6rem;
+  color: #775533;
+  text-align: center;
+  min-height: 1.8em;
+}
+
+.play-btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,69,0,0.25);
+  background: rgba(15,8,3,0.85);
+  color: #cc8844;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.play-btn:hover {
+  border-color: #ff6a00;
+  box-shadow: 0 0 25px rgba(255,106,0,0.3);
+}
+
+.play-btn.playing {
+  background: radial-gradient(circle, #ff6a00, #cc3300);
+  border-color: #ff4500;
+  color: #fff;
+  box-shadow: 0 0 30px rgba(255,69,0,0.5);
+  animation: btnPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,69,0,0.4); }
+  50% { box-shadow: 0 0 45px rgba(255,69,0,0.7); }
+}
+
+/* Volume */
+.volume-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.volume-control label {
+  font-size: 0.55rem;
+  color: #664422;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+input[type="range"][orient="vertical"] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  height: 90px;
+  width: 24px;
+  accent-color: #ff6a00;
+}
+
+/* ======================================
+   Gesture Dock (side panels)
+   ====================================== */
+.gesture-dock {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,69,0,0.15);
+  border-radius: 14px;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.gesture-card {
+  width: 80px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  border: 1px solid rgba(255,69,0,0.1);
+  border-radius: 10px;
+  background: rgba(10,5,2,0.4);
+  padding: 0.4rem;
+  transition: all 0.25s;
+}
+
+.gesture-card img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: brightness(0.7);
+  transition: filter 0.25s;
+}
+
+.gesture-card-icon {
+  font-size: 2rem;
+  line-height: 1;
+  filter: brightness(0.7);
+  transition: filter 0.25s;
+}
+
+.gesture-card span {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #775533;
+  font-weight: 600;
+  transition: color 0.25s;
+}
+
+/* Active / detected state */
+.gesture-card.active {
+  border-color: rgba(255,140,0,0.6);
+  box-shadow: 0 0 20px rgba(255,100,0,0.25);
+  background: rgba(255,69,0,0.08);
+  animation: cardPulse 0.6s ease-in-out;
+}
+
+.gesture-card.active img,
+.gesture-card.active .gesture-card-icon {
+  filter: brightness(1.2);
+}
+
+.gesture-card.active span {
+  color: #ffaa44;
+}
+
+@keyframes cardPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Crossfade card (center, horizontal) */
+.crossfade-card {
+  flex-direction: row;
+  width: auto;
+  height: auto;
+  padding: 0.3rem 0.6rem;
+  gap: 0.4rem;
+}
+
+.crossfade-card img {
+  width: 40px;
+  height: 40px;
+}
+
+/* ======================================
+   Camera
+   ====================================== */
+#camera-container {
+  position: relative;
+  width: 480px;
+  height: 360px;
+  border: 2px solid rgba(255,69,0,0.35);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 20px rgba(255,69,0,0.15), 0 0 60px rgba(255,69,0,0.05);
+}
+
+#webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(-1);
+}
+
+/* ======================================
+   Crossfader
+   ====================================== */
+#crossfader-section {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.crossfader-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.6rem;
+  color: #775533;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+#crossfader {
+  width: 100%;
+  accent-color: #ff4500;
+  height: 28px;
+}
+
+/* ======================================
+   SFX Pad
+   ====================================== */
+#sfx-pad {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sfx-btn {
+  width: 82px;
+  height: 60px;
+  border: 1px solid rgba(255,69,0,0.2);
+  border-radius: 10px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #aa7733;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.sfx-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,100,0,0.3), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.sfx-btn:hover {
+  border-color: rgba(255,100,0,0.5);
+  transform: scale(1.06);
+  box-shadow: 0 0 20px rgba(255,69,0,0.2);
+}
+
+.sfx-btn:active,
+.sfx-btn.fired {
+  transform: scale(0.94);
+  border-color: #ff4500;
+  color: #fff;
+  box-shadow: 0 0 30px rgba(255,69,0,0.5);
+}
+
+.sfx-btn:active::after,
+.sfx-btn.fired::after {
+  opacity: 1;
+}
+
+.sfx-icon { font-size: 1.2rem; line-height: 1; }
+.sfx-label { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+
+/* ======================================
+   VFX Overlays
+   ====================================== */
+#vfx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Laser */
+.vfx-laser { animation: vfxLaserBg 0.2s linear forwards; }
+.vfx-laser .laser-beam {
+  position: absolute; height: 3px;
+  background: linear-gradient(90deg, transparent, #ff2200, #ff6600, #ff2200, transparent);
+  box-shadow: 0 0 15px #ff4400, 0 0 30px #ff2200;
+  opacity: 0; animation: beamSweep 0.2s ease-out forwards;
+}
+.vfx-laser .laser-beam:nth-child(1) { top: 15%; left: 0; width: 100%; transform: rotate(-2deg); }
+.vfx-laser .laser-beam:nth-child(2) { top: 35%; left: 0; width: 100%; animation-delay: 0.03s; transform: rotate(1deg); }
+.vfx-laser .laser-beam:nth-child(3) { top: 55%; left: 0; width: 100%; animation-delay: 0.06s; transform: rotate(-1.5deg); }
+.vfx-laser .laser-beam:nth-child(4) { top: 75%; left: 0; width: 100%; animation-delay: 0.02s; transform: rotate(2deg); }
+@keyframes beamSweep { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes vfxLaserBg { 0% { background: transparent; } 10% { background: rgba(255,34,0,0.08); } 100% { background: transparent; } }
+
+/* Robot Glitch */
+.vfx-glitch { animation: glitchShake 0.4s steps(4) forwards; }
+.vfx-glitch::before {
+  content: 'SYSTEM OVERRIDE'; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); font-size: 3rem; font-weight: 900;
+  color: #00ffcc; text-shadow: 3px 0 #ff0055, -3px 0 #0066ff, 0 0 30px #00ffcc;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  animation: glitchText 0.4s steps(3) forwards; white-space: nowrap;
+}
+@keyframes glitchShake {
+  0% { transform: translate(0); filter: none; }
+  25% { transform: translate(-4px,2px); filter: hue-rotate(90deg); }
+  50% { transform: translate(3px,-3px); filter: hue-rotate(180deg) saturate(2); }
+  75% { transform: translate(-2px,1px); filter: hue-rotate(270deg); }
+  100% { transform: translate(0); filter: none; }
+}
+@keyframes glitchText {
+  0% { opacity: 0; } 15% { opacity: 1; clip-path: inset(20% 0 40% 0); }
+  30% { opacity: 1; clip-path: inset(60% 0 5% 0); } 50% { opacity: 1; clip-path: none; }
+  80% { opacity: 1; } 100% { opacity: 0; }
+}
+
+/* Boom */
+.vfx-boom { animation: boomFlash 0.35s ease-out forwards; }
+@keyframes boomFlash {
+  0% { background: rgba(255,220,150,0.9); } 15% { background: rgba(255,150,50,0.6); }
+  40% { background: rgba(255,69,0,0.2); } 100% { background: transparent; }
+}
+body.screen-shake { animation: shakeHard 0.35s ease-out; }
+@keyframes shakeHard {
+  0% { transform: translate(0); } 10% { transform: translate(-8px,6px); }
+  20% { transform: translate(10px,-8px); } 30% { transform: translate(-6px,4px); }
+  40% { transform: translate(8px,-4px); } 50% { transform: translate(-4px,6px); }
+  60% { transform: translate(6px,-2px); } 70% { transform: translate(-3px,3px); }
+  80% { transform: translate(2px,-2px); } 90% { transform: translate(-1px,1px); }
+  100% { transform: translate(0); }
+}
+
+/* Air Horn burst */
+.vfx-horn { animation: hornBg 0.4s ease-out forwards; }
+.vfx-horn .horn-ray {
+  position: absolute; top: 50%; left: 50%;
+  width: 120vmax; height: 4px; margin-left: -60vmax; margin-top: -2px;
+  background: linear-gradient(90deg, transparent 10%, rgba(255,170,0,0.7) 30%, rgba(255,220,100,0.9) 50%, rgba(255,170,0,0.7) 70%, transparent 90%);
+  box-shadow: 0 0 20px rgba(255,170,0,0.5); opacity: 0; transform-origin: center center;
+  animation: rayBurst 0.4s ease-out forwards;
+}
+.vfx-horn .horn-ray:nth-child(odd) { animation-delay: 0.03s; }
+@keyframes hornBg { 0% { background: rgba(255,200,50,0.15); } 30% { background: rgba(255,170,0,0.1); } 100% { background: transparent; } }
+@keyframes rayBurst { 0% { opacity: 0; width: 0; margin-left: 0; } 20% { opacity: 1; width: 120vmax; margin-left: -60vmax; } 100% { opacity: 0; } }
+
+/* Backspin */
+.vfx-backspin { animation: backspinWarp 0.8s ease-out forwards; }
+.vfx-backspin::before {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 300px; height: 300px; margin: -150px 0 0 -150px;
+  border: 4px solid rgba(204,102,255,0.6); border-radius: 50%;
+  box-shadow: 0 0 40px rgba(204,102,255,0.4), inset 0 0 40px rgba(204,102,255,0.2);
+  animation: vinylSpin 0.8s ease-out forwards;
+}
+@keyframes backspinWarp { 0% { background: rgba(150,50,255,0.08); } 40% { background: rgba(150,50,255,0.04); } 100% { background: transparent; } }
+@keyframes vinylSpin { 0% { transform: rotate(0) scale(0.3); opacity: 1; } 50% { transform: rotate(-360deg) scale(1.2); opacity: 0.7; } 100% { transform: rotate(-540deg) scale(2); opacity: 0; } }
+
+/* ======================================
+   Responsive
+   ====================================== */
+@media (max-width: 900px) {
+  #cockpit {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .col-left, .col-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .gesture-dock {
+    flex-direction: row;
+  }
+  #camera-container {
+    width: 100%;
+    max-width: 420px;
+    height: 315px;
+  }
+}
